@@ -1,5 +1,183 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sprint 1 test</title>
-<style>body{font-family:system-ui,sans-serif;background:#fff;color:#111;display:grid;place-items:center;min-height:100vh;margin:0;padding:16px}</style>
-</head><body><h1>✅ Sprint 1 page is live</h1></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprint 1 Decision Tool</title>
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--ink:#16181d;--muted:#5d6470;--line:#e3e4e8;--accent:#2f5bea;--accent-soft:#dfe7fd;--good:#1d8a4e;--bad:#c23a3a;--warn:#b26b00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121317;--card:#1b1d23;--ink:#eceef2;--muted:#9aa1ad;--line:#2c2f37;--accent:#7c9bff;--accent-soft:#26304d;--good:#4cc285;--bad:#ff7a7a;--warn:#f0b04a}}
+:root[data-theme="dark"]{--bg:#121317;--card:#1b1d23;--ink:#eceef2;--muted:#9aa1ad;--line:#2c2f37;--accent:#7c9bff;--accent-soft:#26304d;--good:#4cc285;--bad:#ff7a7a;--warn:#f0b04a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.6rem;margin:0 0 4px}
+h2{font-size:1rem;margin:0 0 12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.sub{color:var(--muted);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.answer{border-left:5px solid var(--accent);font-size:1.15rem}
+.answer b{color:var(--accent)}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.slider{margin-bottom:14px}
+.slider label{display:flex;justify-content:space-between;font-weight:600}
+.slider small{display:block;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.row{display:grid;grid-template-columns:150px 1fr 120px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.track{position:relative;height:22px;background:var(--bg);border-radius:6px}
+.band{position:absolute;top:4px;height:14px;background:var(--accent-soft);border-radius:4px}
+.dot{position:absolute;top:1px;width:4px;height:20px;background:var(--accent);border-radius:2px;transform:translateX(-2px)}
+.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem}
+.num b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.pass{color:var(--good);font-weight:700}.fail{color:var(--bad);font-weight:700}
+button{font:inherit;background:var(--accent-soft);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+.limits{border-left:5px solid var(--warn)}
+.limits ul{margin:0;padding-left:20px}
+.tag{display:inline-block;font-size:.8rem;padding:1px 8px;border-radius:999px;background:var(--accent-soft);margin-left:6px}
+.close{color:var(--warn);font-weight:600}
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="sub" id="question"></p>
+
+  <div class="card answer" id="answer"></div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>What matters (move the sliders)</h2>
+      <div id="sliders"></div>
+      <button id="reset">Reset to defaults</button>
+    </div>
+    <div class="card">
+      <h2>Ranking <span class="tag">low · likely · high</span></h2>
+      <div id="ranking"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Test scenarios</h2>
+    <table>
+      <thead><tr><th>Scenario</th><th>Expected winner</th><th>Actual</th><th>Result</th><th></th></tr></thead>
+      <tbody id="scenarios"></tbody>
+    </table>
+  </div>
+
+  <div class="card limits">
+    <h2>Limits (read before trusting this)</h2>
+    <ul id="limits"></ul>
+  </div>
+</main>
+
+<script>
+/* ===== EDIT THIS BLOCK TOMORROW: everything the page shows comes from here ===== */
+const CONFIG = {
+  title: "PLACEHOLDER: Sponsor challenge",
+  question: "PLACEHOLDER: Which option should the sponsor pick?",
+  // Factors = the sliders. weight 0-10. higherIsBetter=false means less is better (e.g. cost).
+  factors: [
+    { id: "impact", label: "Business impact", help: "How much it moves the goal", weight: 7, higherIsBetter: true },
+    { id: "cost",   label: "Cost",            help: "Money + people time",       weight: 5, higherIsBetter: false },
+    { id: "speed",  label: "Speed to result", help: "Months until it pays off",  weight: 4, higherIsBetter: true },
+  ],
+  // Each option: [low, likely, high] per factor, on a 0-10 scale.
+  options: [
+    { name: "Option A", values: { impact: [6, 8, 9], cost: [6, 7, 8], speed: [3, 4, 6] } },
+    { name: "Option B", values: { impact: [4, 6, 7], cost: [2, 3, 4], speed: [6, 7, 8] } },
+    { name: "Option C", values: { impact: [3, 5, 8], cost: [4, 5, 6], speed: [4, 5, 7] } },
+  ],
+  // Scenarios = exact tests. Include at least one negative (a case where the favourite should NOT win).
+  scenarios: [
+    { name: "Impact is all that matters", weights: { impact: 10, cost: 0, speed: 0 }, expect: "Option A" },
+    { name: "Tight budget (negative test: A should NOT win)", weights: { impact: 3, cost: 10, speed: 5 }, expect: "Option B" },
+  ],
+  limits: [
+    "PLACEHOLDER: scores are estimates, not measured data.",
+    "PLACEHOLDER: small sample, so treat the ranges as the real answer.",
+  ],
+};
+/* ===== END OF EDIT BLOCK ===== */
+
+const $ = id => document.getElementById(id);
+let weights = {};
+
+function score(opt, w) {
+  const total = CONFIG.factors.reduce((s, f) => s + (w[f.id] || 0), 0) || 1;
+  // low case uses the worst value per factor, high case the best
+  const pick = (f, k) => {
+    const [lo, mid, hi] = opt.values[f.id];
+    const v = k === 1 ? mid : (f.higherIsBetter ? (k === 0 ? lo : hi) : (k === 0 ? hi : lo));
+    return f.higherIsBetter ? v : 10 - v;
+  };
+  return [0, 1, 2].map(k =>
+    CONFIG.factors.reduce((s, f) => s + (w[f.id] || 0) * pick(f, k), 0) / total * 10);
+}
+
+function rank(w) {
+  return CONFIG.options
+    .map(o => ({ name: o.name, s: score(o, w) }))
+    .sort((a, b) => b.s[1] - a.s[1]);
+}
+
+function renderSliders() {
+  $("sliders").innerHTML = CONFIG.factors.map(f => `
+    <div class="slider">
+      <label for="w-${f.id}">${f.label} <span id="v-${f.id}">${weights[f.id]}</span></label>
+      <small>${f.help}${f.higherIsBetter ? "" : " (less is better)"}</small>
+      <input type="range" id="w-${f.id}" min="0" max="10" step="1" value="${weights[f.id]}">
+    </div>`).join("");
+  CONFIG.factors.forEach(f => {
+    $("w-" + f.id).oninput = e => { weights[f.id] = +e.target.value; $("v-" + f.id).textContent = e.target.value; render(); };
+  });
+}
+
+function render() {
+  const r = rank(weights);
+  const [top, second] = r;
+  const overlap = second && second.s[2] >= top.s[0];
+  $("answer").innerHTML = `Recommendation: <b>${top.name}</b>, score ${top.s[1].toFixed(0)} (range ${top.s[0].toFixed(0)}–${top.s[2].toFixed(0)} out of 100).` +
+    (overlap ? `<br><span class="close">⚠️ Too close to call: ${second.name}'s range overlaps. Treat as a tie.</span>` : "");
+  $("ranking").innerHTML = r.map((o, i) => `
+    <div class="row">
+      <div><b>${i + 1}. ${o.name}</b></div>
+      <div class="track" title="low ${o.s[0].toFixed(0)} · likely ${o.s[1].toFixed(0)} · high ${o.s[2].toFixed(0)}">
+        <div class="band" style="left:${o.s[0]}%;width:${Math.max(o.s[2] - o.s[0], 1)}%"></div>
+        <div class="dot" style="left:${o.s[1]}%"></div>
+      </div>
+      <div class="num">${o.s[0].toFixed(0)} · <b>${o.s[1].toFixed(0)}</b> · ${o.s[2].toFixed(0)}</div>
+    </div>`).join("");
+}
+
+function renderScenarios() {
+  $("scenarios").innerHTML = CONFIG.scenarios.map((sc, i) => {
+    const actual = rank(sc.weights)[0].name;
+    const ok = actual === sc.expect;
+    return `<tr><td>${sc.name}</td><td>${sc.expect}</td><td>${actual}</td>
+      <td class="${ok ? "pass" : "fail"}">${ok ? "✅ pass" : "❌ fail"}</td>
+      <td><button data-i="${i}">Try it</button></td></tr>`;
+  }).join("");
+  document.querySelectorAll("#scenarios button").forEach(b => b.onclick = () => {
+    weights = { ...CONFIG.scenarios[b.dataset.i].weights }; renderSliders(); render();
+  });
+}
+
+function reset() {
+  weights = Object.fromEntries(CONFIG.factors.map(f => [f.id, f.weight]));
+  renderSliders(); render();
+}
+
+$("title").textContent = CONFIG.title;
+$("question").textContent = CONFIG.question;
+$("limits").innerHTML = CONFIG.limits.map(l => `<li>${l}</li>`).join("");
+$("reset").onclick = reset;
+reset();
+renderScenarios();
+</script>
+</body>
+</html>
