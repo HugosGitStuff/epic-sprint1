@@ -1,183 +1,207 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sprint 1 Decision Tool</title>
+<title>Habitar+ Investment Atlas</title>
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--ink:#16181d;--muted:#5d6470;--line:#e3e4e8;--accent:#2f5bea;--accent-soft:#dfe7fd;--good:#1d8a4e;--bad:#c23a3a;--warn:#b26b00}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121317;--card:#1b1d23;--ink:#eceef2;--muted:#9aa1ad;--line:#2c2f37;--accent:#7c9bff;--accent-soft:#26304d;--good:#4cc285;--bad:#ff7a7a;--warn:#f0b04a}}
-:root[data-theme="dark"]{--bg:#121317;--card:#1b1d23;--ink:#eceef2;--muted:#9aa1ad;--line:#2c2f37;--accent:#7c9bff;--accent-soft:#26304d;--good:#4cc285;--bad:#ff7a7a;--warn:#f0b04a}
+:root{--bg:#f7f7f5;--card:#fff;--ink:#16181d;--muted:#5d6470;--line:#e3e4e8;--accent:#2f5bea;--accent-soft:#dfe7fd;--good:#1d8a4e;--good-soft:#dcf2e5;--bad:#c23a3a;--bad-soft:#f8e0e0;--warn:#b26b00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121317;--card:#1b1d23;--ink:#eceef2;--muted:#9aa1ad;--line:#2c2f37;--accent:#7c9bff;--accent-soft:#26304d;--good:#4cc285;--good-soft:#1c3328;--bad:#ff7a7a;--bad-soft:#3a2224;--warn:#f0b04a}}
+:root[data-theme="dark"]{--bg:#121317;--card:#1b1d23;--ink:#eceef2;--muted:#9aa1ad;--line:#2c2f37;--accent:#7c9bff;--accent-soft:#26304d;--good:#4cc285;--good-soft:#1c3328;--bad:#ff7a7a;--bad-soft:#3a2224;--warn:#f0b04a}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-main{max-width:1100px;margin:0 auto;padding:24px 16px 48px}
-h1{font-size:1.6rem;margin:0 0 4px}
-h2{font-size:1rem;margin:0 0 12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
-.sub{color:var(--muted);margin:0 0 20px}
+main{max-width:1150px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.7rem;margin:0}
+h2{font-size:.85rem;margin:0 0 12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.sub{color:var(--muted);margin:2px 0 16px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
-.answer{border-left:5px solid var(--accent);font-size:1.15rem}
+.answer{border-left:5px solid var(--accent);font-size:1.08rem}
 .answer b{color:var(--accent)}
-.grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
-@media (max-width:760px){.grid{grid-template-columns:1fr}}
-.slider{margin-bottom:14px}
-.slider label{display:flex;justify-content:space-between;font-weight:600}
-.slider small{display:block;color:var(--muted)}
-input[type=range]{width:100%;accent-color:var(--accent)}
-.row{display:grid;grid-template-columns:150px 1fr 120px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
-.row:last-child{border-bottom:0}
-.track{position:relative;height:22px;background:var(--bg);border-radius:6px}
-.band{position:absolute;top:4px;height:14px;background:var(--accent-soft);border-radius:4px}
-.dot{position:absolute;top:1px;width:4px;height:20px;background:var(--accent);border-radius:2px;transform:translateX(-2px)}
-.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem}
-.num b{color:var(--ink)}
-table{width:100%;border-collapse:collapse;font-size:.92rem}
-th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--muted);font-weight:600}
-.pass{color:var(--good);font-weight:700}.fail{color:var(--bad);font-weight:700}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.seg button{border:0;border-radius:0;background:transparent;padding:6px 14px}
+.seg button.on{background:var(--accent);color:#fff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{padding:8px 14px;border-radius:999px}
+.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 button{font:inherit;background:var(--accent-soft);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 10px;cursor:pointer}
 button:hover{border-color:var(--accent)}
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:760px){.picks{grid-template-columns:1fr}}
+.pick{border-radius:10px;padding:12px;border:1px solid var(--line);cursor:pointer}
+.pick.best{background:var(--good-soft)}.pick.alt{background:var(--accent-soft)}.pick.avoid{background:var(--bad-soft)}
+.pick .lab{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.pick .town{font-size:1.25rem;font-weight:700}
+.pick .meta{color:var(--muted);font-size:.88rem}
+.grid{display:grid;grid-template-columns:330px 1fr;gap:16px}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.slider{margin-bottom:12px}
+.slider label{display:flex;justify-content:space-between;font-weight:600;font-size:.93rem}
+.slider small{display:block;color:var(--muted);font-size:.8rem}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.bar{display:grid;grid-template-columns:170px 1fr 56px;gap:8px;align-items:center;padding:3px 0;cursor:pointer;font-size:.92rem}
+.bar:hover .nm{color:var(--accent)}
+.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk{position:relative;height:16px;background:var(--bg);border-radius:4px}
+.trk .mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)}
+.trk .f{position:absolute;top:2px;height:12px;border-radius:3px}
+.v{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:.85rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:6px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
 .limits{border-left:5px solid var(--warn)}
 .limits ul{margin:0;padding-left:20px}
-.tag{display:inline-block;font-size:.8rem;padding:1px 8px;border-radius:999px;background:var(--accent-soft);margin-left:6px}
-.close{color:var(--warn);font-weight:600}
+.tag{display:inline-block;font-size:.78rem;padding:1px 8px;border-radius:999px;background:var(--accent-soft)}
+.tag.b{background:var(--good-soft)}.tag.r{background:var(--accent-soft)}
+select{font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 6px}
+.muted{color:var(--muted)}
 </style>
 </head>
 <body>
 <main>
-  <h1 id="title"></h1>
-  <p class="sub" id="question"></p>
+ <div class="top">
+  <div><h1>Habitar+ Investment Atlas</h1>
+  <p class="sub">Onde construir ou reabilitar casas em Portugal. 3 cenários + os teus critérios. Dados PORDATA/INE, 2018–2022.</p></div>
+  <div class="seg" id="view"><button data-v="cid" class="on">Cidadãos</button><button data-v="inv">Investidores</button></div>
+ </div>
 
-  <div class="card answer" id="answer"></div>
+ <div class="card answer" id="answer"></div>
 
-  <div class="grid">
-    <div class="card">
-      <h2>What matters (move the sliders)</h2>
-      <div id="sliders"></div>
-      <button id="reset">Reset to defaults</button>
-    </div>
-    <div class="card">
-      <h2>Ranking <span class="tag">low · likely · high</span></h2>
-      <div id="ranking"></div>
-    </div>
-  </div>
+ <div class="tabs" id="tabs"></div>
 
+ <div class="card">
+  <h2 id="scQ"></h2>
+  <p style="margin:0 0 12px" id="scWhy"></p>
+  <div class="picks" id="picks"></div>
+ </div>
+
+ <div class="grid">
   <div class="card">
-    <h2>Test scenarios</h2>
-    <table>
-      <thead><tr><th>Scenario</th><th>Expected winner</th><th>Actual</th><th>Result</th><th></th></tr></thead>
-      <tbody id="scenarios"></tbody>
-    </table>
+   <h2>Critério (mexe nos pesos)</h2>
+   <div id="sliders"></div>
+   <p class="muted" style="font-size:.82rem;margin:4px 0 10px">Mexer num peso passa para "Os meus critérios". Peso negativo = penaliza.</p>
+   <label style="font-size:.9rem">Municípios a incluir:
+    <select id="minStock"><option value="5000" selected>com 5.000+ casas (232)</option><option value="0">todos (308)</option><option value="20000">com 20.000+ casas</option></select></label>
   </div>
+  <div class="card">
+   <div class="two">
+    <div><h2 id="hiTitle"></h2><div id="hi"></div></div>
+    <div><h2 id="loTitle"></h2><div id="lo"></div></div>
+   </div>
+  </div>
+ </div>
 
-  <div class="card limits">
-    <h2>Limits (read before trusting this)</h2>
-    <ul id="limits"></ul>
-  </div>
+ <div class="two">
+  <div class="card"><h2>Por região (média do cenário)</h2><div id="regions"></div></div>
+  <div class="card"><h2 id="detT">Município</h2><div id="detail"><p class="muted">Clica num município.</p></div></div>
+ </div>
+
+ <div class="card limits">
+  <h2>Armadilhas nos dados e limites (lê antes de confiar)</h2>
+  <ul>
+   <li><b>Não há população por município.</b> Só densidade, sem área. Por isso tudo é medido <b>por 1.000 casas</b> (stock de alojamentos 2021).</li>
+   <li><b>Conta edifícios, não fogos.</b> Um prédio com 20 apartamentos conta 1. A falta de casas nas cidades está por isso <b>exagerada</b>.</li>
+   <li><b>Stock inclui casas vazias e de férias</b>, e é estimado desde 2011. Não sabemos quantas estão disponíveis.</li>
+   <li><b>Sem preços, rendas nem emprego.</b> O README refere um ficheiro de pressupostos que não veio. "Compensa" usa o poder de compra (índice, não euros).</li>
+   <li><b>Dimensão do agregado</b> só existe por região (7). Usámos 2020: em 2021 há quebra de série (salto de 2,5 para 2,7).</li>
+   <li><b>Escolaridade</b> só por região: não serve para escolher municípios, não foi usada.</li>
+   <li><b>Valores de 2021–22 são estimativas.</b> 2020–21 inclui o efeito COVID.</li>
+   <li><b>Odemira</b> sobe por trabalhadores agrícolas sazonais: procura real, mas com pouco poder de compra. Cuidado como investimento.</li>
+  </ul>
+ </div>
 </main>
-
 <script>
-/* ===== EDIT THIS BLOCK TOMORROW: everything the page shows comes from here ===== */
-const CONFIG = {
-  title: "PLACEHOLDER: Sponsor challenge",
-  question: "PLACEHOLDER: Which option should the sponsor pick?",
-  // Factors = the sliders. weight 0-10. higherIsBetter=false means less is better (e.g. cost).
-  factors: [
-    { id: "impact", label: "Business impact", help: "How much it moves the goal", weight: 7, higherIsBetter: true },
-    { id: "cost",   label: "Cost",            help: "Money + people time",       weight: 5, higherIsBetter: false },
-    { id: "speed",  label: "Speed to result", help: "Months until it pays off",  weight: 4, higherIsBetter: true },
-  ],
-  // Each option: [low, likely, high] per factor, on a 0-10 scale.
-  options: [
-    { name: "Option A", values: { impact: [6, 8, 9], cost: [6, 7, 8], speed: [3, 4, 6] } },
-    { name: "Option B", values: { impact: [4, 6, 7], cost: [2, 3, 4], speed: [6, 7, 8] } },
-    { name: "Option C", values: { impact: [3, 5, 8], cost: [4, 5, 6], speed: [4, 5, 7] } },
-  ],
-  // Scenarios = exact tests. Include at least one negative (a case where the favourite should NOT win).
-  scenarios: [
-    { name: "Impact is all that matters", weights: { impact: 10, cost: 0, speed: 0 }, expect: "Option A" },
-    { name: "Tight budget (negative test: A should NOT win)", weights: { impact: 3, cost: 10, speed: 5 }, expect: "Option B" },
-  ],
-  limits: [
-    "PLACEHOLDER: scores are estimates, not measured data.",
-    "PLACEHOLDER: small sample, so treat the ranges as the real answer.",
-  ],
+const RAW=[["Arcos de Valdevez","Norte","Alto Minho",17722,-309,932,243,151,92,665,232,393,72.8,46.2,2.7],["Caminha","Norte","Alto Minho",14369,222,823,116,90,26,261,329,747,86.5,117.4,2.7],["Melgaço","Norte","Alto Minho",7662,-596,176,31,28,3,88,92,182,64,32.1,2.7],["Monção","Norte","Alto Minho",13682,-129,947,118,103,15,344,441,1014,75.1,84.6,2.7],["Paredes de Coura","Norte","Alto Minho",6234,-14,394,67,58,9,103,77,208,69.4,62.8,2.7],["Ponte da Barca","Norte","Alto Minho",8258,-193,346,155,94,61,212,73,163,67.2,60.8,2.7],["Ponte de Lima","Norte","Alto Minho",23043,-536,491,407,335,72,683,315,669,76.7,128.2,2.7],["Valença","Norte","Alto Minho",8399,355,891,181,156,25,226,437,1263,84.8,118.3,2.7],["Viana do Castelo","Norte","Alto Minho",49278,239,2093,489,344,145,906,1449,3815,92.1,269.7,2.7],["Vila Nova de Cerveira","Norte","Alto Minho",6333,363,673,98,77,21,127,230,733,84.9,83.8,2.7],["Amares","Norte","Cávado",10082,814,1057,267,223,44,340,186,533,74,232.2,2.7],["Barcelos","Norte","Cávado",49579,-181,473,812,781,31,1378,922,2149,81.6,307.6,2.7],["Braga","Norte","Cávado",88924,10346,9132,1470,1370,100,2703,7876,14915,105.4,1071.1,2.7],["Esposende","Norte","Cávado",21761,1857,1936,387,323,64,532,469,1301,86.8,377.5,2.7],["Terras de Bouro","Norte","Cávado",4902,-197,111,5,3,2,48,54,92,67.1,22.9,2.7],["Vila Verde","Norte","Cávado",24025,1447,1990,477,445,32,771,339,957,74.2,206.4,2.7],["Cabeceiras de Basto","Norte","Ave",9830,-243,201,218,151,67,333,136,169,69,64.1,2.7],["Fafe","Norte","Ave",26246,-467,327,453,395,58,593,241,534,76.9,220.6,2.7],["Guimarães","Norte","Ave",69603,-50,266,1071,915,156,1640,1801,3307,89.3,648.9,2.7],["Mondim de Basto","Norte","Ave",4650,-239,33,55,50,5,104,48,59,64.6,37.3,2.7],["Póvoa de Lanhoso","Norte","Ave",12025,964,1396,92,91,1,249,164,441,72,164.9,2.7],["Vieira do Minho","Norte","Ave",8190,-258,266,102,69,33,206,120,164,67.5,55.4,2.7],["Vila Nova de Famalicão","Norte","Ave",57744,2679,2946,1153,1075,78,1617,1386,3102,92.1,667.1,2.7],["Vizela","Norte","Ave",9592,702,475,191,158,33,333,181,312,81.4,978.6,2.7],["Arouca","Norte","Área Metropolitana do Porto",11135,-551,-101,173,126,47,361,100,150,74.3,63.7,2.7],["Espinho","Norte","Área Metropolitana do Porto",16176,549,1443,140,105,35,226,626,937,95.9,1500.9,2.7],["Gondomar","Norte","Área Metropolitana do Porto",74527,2243,4065,315,314,1,526,1910,3718,85.9,1260.5,2.7],["Maia","Norte","Área Metropolitana do Porto",60725,5434,5770,386,258,128,720,2341,4541,108.7,1673.5,2.7],["Matosinhos","Norte","Área Metropolitana do Porto",83719,3040,4916,397,267,130,958,3743,7373,118.1,2813.7,2.7],["Oliveira de Azeméis","Norte","Área Metropolitana do Porto",30579,644,1639,200,171,29,376,695,1295,84.5,414.1,2.7],["Paredes","Norte","Área Metropolitana do Porto",35653,922,875,505,495,10,816,481,1158,79.3,543.2,2.7],["Porto","Norte","Área Metropolitana do Porto",140814,6160,11916,1339,341,998,2013,11634,23312,147.6,5753.2,2.7],["Póvoa de Varzim","Norte","Área Metropolitana do Porto",36115,2606,3080,409,406,3,457,1159,3069,94.5,797.6,2.7],["Santa Maria da Feira","Norte","Área Metropolitana do Porto",62309,1985,2927,475,467,8,710,1340,2228,88.4,638.6,2.7],["Santo Tirso","Norte","Área Metropolitana do Porto",30391,-882,584,304,237,67,497,437,758,84.8,495.4,2.7],["São João da Madeira","Norte","Área Metropolitana do Porto",10659,1401,1703,62,52,10,75,500,1208,116.7,2901.1,2.7],["Trofa","Norte","Área Metropolitana do Porto",15990,1037,1159,150,122,28,261,420,1021,93.1,544.9,2.7],["Vale de Cambra","Norte","Área Metropolitana do Porto",12023,-264,339,102,54,48,250,224,551,87.8,144.2,2.7],["Valongo","Norte","Área Metropolitana do Porto",41218,4515,4583,243,206,37,377,922,2095,92.7,1297.1,2.7],["Vila do Conde","Norte","Área Metropolitana do Porto",38818,3380,3906,439,278,161,1152,1663,3252,93.6,555,2.7],["Vila Nova de Gaia","Norte","Área Metropolitana do Porto",145720,5723,8204,1063,875,188,1770,5947,12372,101,1820.8,2.7],["Boticas","Norte","Alto Tâmega",4665,-315,21,4,2,2,45,40,51,65.8,15.3,2.7],["Chaves","Norte","Alto Tâmega",28702,-991,609,222,206,16,386,518,835,82.5,63.2,2.7],["Montalegre","Norte","Alto Tâmega",10669,-344,333,80,80,0,112,88,111,65.1,11.4,2.7],["Ribeira de Pena","Norte","Alto Tâmega",5017,-213,89,56,47,9,84,79,102,65.8,26.9,2.7],["Valpaços","Norte","Alto Tâmega",13525,-667,428,147,128,19,249,164,193,63.9,26.5,2.7],["Vila Pouca de Aguiar","Norte","Alto Tâmega",10220,-282,404,115,92,23,158,135,187,70.3,26.9,2.7],["Amarante","Norte","Tâmega e Sousa",29187,-856,128,309,247,62,561,296,558,75.3,172.7,2.7],["Baião","Norte","Tâmega e Sousa",11863,-984,-395,107,63,44,230,63,143,62.7,99.4,2.7],["Castelo de Paiva","Norte","Tâmega e Sousa",7772,-448,-134,142,111,31,177,61,190,70.6,134.1,2.7],["Celorico de Basto","Norte","Tâmega e Sousa",11135,-522,102,229,200,29,340,77,126,63.3,97.2,2.7],["Cinfães","Norte","Tâmega e Sousa",11795,-870,-226,40,30,10,128,57,192,64.1,73.7,2.7],["Felgueiras","Norte","Tâmega e Sousa",24848,-963,-867,185,174,11,401,246,547,81.2,479.7,2.7],["Lousada","Norte","Tâmega e Sousa",19570,940,910,407,327,80,705,176,638,74.6,497.1,2.7],["Marco de Canaveses","Norte","Tâmega e Sousa",25046,-718,-244,270,257,13,448,236,619,75.5,245,2.7],["Paços de Ferreira","Norte","Tâmega e Sousa",22072,209,130,422,347,75,631,241,532,82.4,786,2.7],["Penafiel","Norte","Tâmega e Sousa",31592,3,341,574,452,122,920,340,709,80.4,329.3,2.7],["Resende","Norte","Tâmega e Sousa",7556,-538,-107,46,24,22,77,47,61,65.7,80.4,2.7],["Alijó","Norte","Douro",8626,-480,150,46,32,14,87,87,89,65.3,34.9,2.7],["Armamar","Norte","Douro",5043,-118,222,32,18,14,46,43,84,71.2,48.7,2.7],["Carrazeda de Ansiães","Norte","Douro",5380,-281,73,18,17,1,66,97,154,67.9,19.4,2.7],["Freixo de Espada à Cinta","Norte","Douro",3176,-250,49,13,12,1,16,105,118,68.3,13.1,2.7],["Lamego","Norte","Douro",16977,-775,104,169,103,66,226,120,174,83.6,146.2,2.7],["Mesão Frio","Norte","Douro",2409,-243,-54,36,6,30,38,19,26,69.1,132.3,2.7],["Moimenta da Beira","Norte","Douro",8113,126,460,106,88,18,146,124,177,72.8,43.4,2.7],["Murça","Norte","Douro",4182,-226,104,37,23,14,57,44,62,65.3,27.6,2.7],["Penedono","Norte","Douro",2672,4,168,15,14,1,31,17,24,66.1,20.9,2.7],["Peso da Régua","Norte","Douro",9382,-806,-342,63,24,39,153,94,110,84.8,152.3,2.7],["Sabrosa","Norte","Douro",4717,-76,205,51,38,13,82,26,41,67.4,35.5,2.7],["Santa Marta de Penaguião","Norte","Douro",4706,-417,-52,32,30,2,37,75,69,64.4,86.8,2.7],["São João da Pesqueira","Norte","Douro",5676,-276,24,83,60,23,123,67,116,69.2,25.5,2.7],["Sernancelhe","Norte","Douro",4582,239,487,84,59,25,98,27,69,64.3,25,2.7],["Tabuaço","Norte","Douro",4469,-205,32,6,6,0,45,30,56,64.1,37.5,2.7],["Tarouca","Norte","Douro",7135,102,290,114,96,18,124,43,69,70.2,74.2,2.7],["Torre de Moncorvo","Norte","Douro",7385,-473,54,25,20,5,47,114,95,68.8,12.7,2.7],["Vila Nova de Foz Côa","Norte","Douro",6535,-268,242,42,14,28,83,194,151,72,15.8,2.7],["Vila Real","Norte","Douro",30559,-447,492,139,138,1,363,863,1270,99.1,131,2.7],["Alfândega da Fé","Norte","Terras de Trás-os-Montes",3935,-286,25,37,35,2,46,147,155,68.3,13.2,2.7],["Bragança","Norte","Terras de Trás-os-Montes",25488,78,1376,235,194,41,412,1654,2713,95.9,29.7,2.7],["Macedo de Cavaleiros","Norte","Terras de Trás-os-Montes",11899,-409,377,81,66,15,155,136,304,76.8,20.3,2.7],["Miranda do Douro","Norte","Terras de Trás-os-Montes",5599,-368,82,48,35,13,93,90,124,75.2,13.1,2.7],["Mirandela","Norte","Terras de Trás-os-Montes",15328,-764,256,132,129,3,193,478,637,85.1,32.3,2.7],["Mogadouro","Norte","Terras de Trás-os-Montes",7318,-407,134,39,36,3,79,77,122,70.5,10.9,2.7],["Vila Flor","Norte","Terras de Trás-os-Montes",5303,-171,196,10,10,0,37,197,190,65.9,22.7,2.7],["Vimioso","Norte","Terras de Trás-os-Montes",4724,-114,253,30,30,0,42,40,68,63.2,8.6,2.7],["Vinhais","Norte","Terras de Trás-os-Montes",7087,-547,126,36,36,0,57,45,64,61.9,10.9,2.7],["Alcobaça","Centro","Oeste",35569,1454,2907,362,297,65,701,1747,3278,86.3,136.9,2.5],["Alenquer","Centro","Oeste",23862,3552,3975,124,103,21,242,2148,3723,88.8,152.2,2.5],["Arruda dos Vinhos","Centro","Oeste",6972,1245,1434,114,105,9,187,518,807,103.2,187.8,2.5],["Bombarral","Centro","Oeste",8185,990,1444,108,93,15,156,393,778,85.3,146.4,2.5],["Cadaval","Centro","Oeste",8947,650,1408,120,97,23,182,286,498,76,79.7,2.5],["Caldas da Rainha","Centro","Oeste",32098,1804,3349,495,492,3,804,2127,4755,98.8,204.1,2.5],["Lourinhã","Centro","Oeste",17669,1803,2412,236,207,29,426,1040,1961,85.3,184.8,2.5],["Nazaré","Centro","Oeste",13691,247,637,155,115,40,216,643,1290,88.1,183,2.5],["Óbidos","Centro","Oeste",9277,1112,1461,129,106,23,285,726,1131,81.3,89,2.5],["Peniche","Centro","Oeste",21839,208,839,230,176,54,300,997,1753,87.7,345.5,2.5],["Sobral de Monte Agraço","Centro","Oeste",5448,1178,1377,47,42,5,84,241,481,85.8,216.7,2.5],["Torres Vedras","Centro","Oeste",46299,5106,6507,367,362,5,683,3417,6380,93.8,209.7,2.5],["Águeda","Centro","Região de Aveiro",23309,387,1265,262,256,6,381,890,1963,87.9,138.7,2.5],["Albergaria-a-Velha","Centro","Região de Aveiro",12630,501,985,148,145,3,237,420,813,85.4,158.8,2.5],["Anadia","Centro","Região de Aveiro",15321,127,1242,130,121,9,205,549,901,82,128.5,2.5],["Aveiro","Centro","Região de Aveiro",42741,3581,4130,466,384,82,689,4104,6885,119.7,420.3,2.5],["Estarreja","Centro","Região de Aveiro",13330,515,1113,151,132,19,205,404,751,86.2,245.8,2.5],["Ílhavo","Centro","Região de Aveiro",22665,2407,2759,277,262,15,485,972,1672,87.9,551.5,2.5],["Murtosa","Centro","Região de Aveiro",7834,408,673,132,84,48,185,140,244,73.1,146.2,2.5],["Oliveira do Bairro","Centro","Região de Aveiro",11633,1406,1760,172,162,10,254,644,1161,85.5,274.4,2.5],["Ovar","Centro","Região de Aveiro",28384,1207,1738,135,121,14,387,706,1225,89.1,376.9,2.5],["Sever do Vouga","Centro","Região de Aveiro",7187,-423,16,93,53,40,114,142,307,80.4,84.4,2.5],["Vagos","Centro","Região de Aveiro",13197,1159,1573,141,136,5,299,453,782,79.5,142.8,2.5],["Arganil","Centro","Região de Coimbra",11054,-141,561,75,50,25,98,459,860,72.1,33.5,2.5],["Cantanhede","Centro","Região de Coimbra",21276,-267,1034,298,258,40,558,507,854,84.4,88,2.5],["Coimbra","Centro","Região de Coimbra",81369,213,2785,295,266,29,514,6054,9034,119.8,444.8,2.5],["Condeixa-a-Nova","Centro","Região de Coimbra",8750,351,705,133,96,37,178,259,405,84.1,123.2,2.5],["Figueira da Foz","Centro","Região de Coimbra",44201,138,2287,244,165,79,429,1768,3366,94.8,156.6,2.5],["Góis","Centro","Região de Coimbra",5202,-174,182,23,9,14,42,206,291,68.3,14.3,2.5],["Lousã","Centro","Região de Coimbra",10748,145,420,88,70,18,102,435,609,84.4,124.1,2.5],["Mealhada","Centro","Região de Coimbra",10418,53,638,139,102,37,165,314,411,88.8,176.7,2.5],["Mira","Centro","Região de Coimbra",8930,184,621,93,87,6,216,148,403,77.1,98.8,2.5],["Miranda do Corvo","Centro","Região de Coimbra",7526,-308,258,75,45,30,112,312,410,73.7,95.3,2.5],["Montemor-o-Velho","Centro","Região de Coimbra",13533,-63,689,107,98,9,152,207,395,75.6,107.9,2.5],["Mortágua","Centro","Região de Coimbra",6177,-126,271,148,87,61,157,183,387,80.2,35.7,2.5],["Oliveira do Hospital","Centro","Região de Coimbra",13937,-349,401,109,64,45,192,550,939,75.1,82.7,2.5],["Pampilhosa da Serra","Centro","Região de Coimbra",5685,-77,351,43,14,29,63,26,41,65,10.2,2.5],["Penacova","Centro","Região de Coimbra",8517,-827,-111,69,62,7,143,227,213,69.7,59.7,2.5],["Penela","Centro","Região de Coimbra",4798,1,319,18,18,0,48,263,452,77.5,40.9,2.5],["Soure","Centro","Região de Coimbra",11845,-526,385,54,52,2,80,204,330,74.6,64.9,2.5],["Tábua","Centro","Região de Coimbra",8792,59,611,25,19,6,52,489,777,73.8,56.9,2.5],["Vila Nova de Poiares","Centro","Região de Coimbra",4623,121,383,36,30,6,65,254,412,77.8,83.1,2.5],["Alvaiázere","Centro","Região de Leiria",5774,-158,309,46,25,21,89,309,509,72.7,39.2,2.5],["Ansião","Centro","Região de Leiria",8621,-302,314,94,69,25,162,310,446,76.2,66.4,2.5],["Batalha","Centro","Região de Leiria",8651,640,822,157,133,24,214,481,730,89.3,153.9,2.5],["Castanheira de Pêra","Centro","Região de Leiria",2733,-115,108,27,10,17,36,80,148,72.5,40.2,2.5],["Figueiró dos Vinhos","Centro","Região de Leiria",4909,-298,122,28,26,2,49,174,298,71.5,30.2,2.5],["Leiria","Centro","Região de Leiria",69571,3757,4703,1269,900,369,2047,4926,8580,105.7,230.7,2.5],["Marinha Grande","Centro","Região de Leiria",22412,1330,1937,148,136,12,161,1706,3206,92.7,212.2,2.5],["Pedrógão Grande","Centro","Região de Leiria",3695,9,302,31,18,13,73,329,662,69.7,27.3,2.5],["Pombal","Centro","Região de Leiria",35007,-571,1346,260,252,8,503,1575,2149,85.2,81.9,2.5],["Porto de Mós","Centro","Região de Leiria",13262,382,973,181,125,56,247,712,1000,82.4,89.9,2.5],["Aguiar da Beira","Centro","Viseu Dão Lafões",4993,-177,377,56,44,12,65,55,45,70.5,25.6,2.5],["Carregal do Sal","Centro","Viseu Dão Lafões",6779,-133,198,61,38,23,141,125,237,72.9,77.7,2.5],["Castro Daire","Centro","Viseu Dão Lafões",12831,-499,258,141,107,34,177,129,175,67.8,36,2.5],["Mangualde","Centro","Viseu Dão Lafões",13379,-270,514,151,121,30,247,301,441,85.4,83.6,2.5],["Nelas","Centro","Viseu Dão Lafões",8920,-130,413,140,91,49,185,144,294,79.3,104.8,2.5],["Oliveira de Frades","Centro","Viseu Dão Lafões",5881,29,272,134,92,42,150,126,470,81.1,66.3,2.5],["Penalva do Castelo","Centro","Viseu Dão Lafões",5572,-149,278,68,53,15,134,58,71,65.8,54.3,2.5],["Santa Comba Dão","Centro","Viseu Dão Lafões",7201,-2,507,87,43,44,157,176,326,75,96.4,2.5],["São Pedro do Sul","Centro","Viseu Dão Lafões",11742,-344,394,41,40,1,166,128,339,73.7,43.3,2.5],["Sátão","Centro","Viseu Dão Lafões",9520,-270,210,107,107,0,189,64,117,70.4,54.6,2.5],["Tondela","Centro","Viseu Dão Lafões",18072,-784,596,89,89,0,169,188,499,79.8,69.4,2.5],["Vila Nova de Paiva","Centro","Viseu Dão Lafões",4495,-71,235,40,28,12,83,41,51,66.9,26.7,2.5],["Viseu","Centro","Viseu Dão Lafões",57208,1315,2920,558,479,79,1110,2022,3781,96.8,197.5,2.5],["Vouzela","Centro","Viseu Dão Lafões",6810,-12,437,71,63,8,139,70,168,68.9,49.9,2.5],["Castelo Branco","Centro","Beira Baixa",39177,-909,1149,256,240,16,306,1228,2597,96.2,36.4,2.5],["Idanha-a-Nova","Centro","Beira Baixa",11976,-362,564,167,102,65,189,346,581,68.5,5.9,2.5],["Oleiros","Centro","Beira Baixa",5023,-91,319,29,20,9,51,74,174,66.6,10.4,2.5],["Penamacor","Centro","Beira Baixa",6557,-154,338,20,5,15,46,199,418,61.2,8.5,2.5],["Proença-a-Nova","Centro","Beira Baixa",6372,-311,302,41,29,12,57,142,246,74.8,18,2.5],["Vila Velha de Ródão","Centro","Beira Baixa",3481,213,511,50,36,14,56,102,185,73.9,10.4,2.5],["Abrantes","Centro","Médio Tejo",25709,-1896,64,100,70,30,137,412,712,88.5,47.5,2.5],["Alcanena","Centro","Médio Tejo",8145,-234,291,42,26,16,52,348,466,85.3,98.5,2.5],["Constância","Centro","Médio Tejo",2204,14,141,42,24,18,60,49,55,85,47.9,2.5],["Entroncamento","Centro","Médio Tejo",10983,1414,1635,70,68,2,74,513,1352,99.1,1536.1,2.5],["Ferreira do Zêzere","Centro","Médio Tejo",7623,-42,448,48,36,12,102,298,450,74.1,41.3,2.5],["Mação","Centro","Médio Tejo",7078,-196,463,60,27,33,79,98,197,71.5,16,2.5],["Ourém","Centro","Médio Tejo",29887,1124,2515,229,217,12,337,1831,2865,86.6,108.7,2.5],["Sardoal","Centro","Médio Tejo",3028,-77,175,22,16,6,29,40,83,74.3,38.6,2.5],["Sertã","Centro","Médio Tejo",12178,-17,699,45,42,3,154,331,651,76.3,33.2,2.5],["Tomar","Centro","Médio Tejo",26503,-973,895,104,98,6,139,778,1351,88.8,103.8,2.5],["Torres Novas","Centro","Médio Tejo",21239,-408,1000,204,154,50,316,477,768,95,127.2,2.5],["Vila de Rei","Centro","Médio Tejo",3014,94,395,49,25,24,74,45,91,67.4,17.7,2.5],["Vila Nova da Barquinha","Centro","Médio Tejo",4272,479,729,90,87,3,103,71,120,77.2,149.2,2.5],["Almeida","Centro","Beiras e Serra da Estrela",6697,-578,104,14,10,4,55,77,107,72.9,11.1,2.5],["Belmonte","Centro","Beiras e Serra da Estrela",4984,-107,183,19,14,5,36,56,111,74.4,52.1,2.5],["Celorico da Beira","Centro","Beiras e Serra da Estrela",6339,-293,95,38,19,19,63,84,169,71.1,26.5,2.5],["Covilhã","Centro","Beiras e Serra da Estrela",35940,-1780,151,173,159,14,213,1078,1880,86.9,83.2,2.5],["Figueira de Castelo Rodrigo","Centro","Beiras e Serra da Estrela",5452,-438,-24,33,27,6,42,44,44,69.8,10,2.5],["Fornos de Algodres","Centro","Beiras e Serra da Estrela",4097,-259,122,52,18,34,63,38,79,64.7,33.4,2.5],["Fundão","Centro","Beiras e Serra da Estrela",22424,-423,930,168,138,30,233,669,1472,79.8,37.9,2.5],["Gouveia","Centro","Beiras e Serra da Estrela",11380,-558,363,88,86,2,124,212,246,69.6,40.5,2.5],["Guarda","Centro","Beiras e Serra da Estrela",27899,-982,267,15,9,6,31,832,1046,95.3,56.1,2.5],["Manteigas","Centro","Beiras e Serra da Estrela",2616,-187,31,14,9,5,30,19,56,71.6,24,2.5],["Mêda","Centro","Beiras e Serra da Estrela",5007,-132,210,57,27,30,60,36,41,68,16,2.5],["Pinhel","Centro","Beiras e Serra da Estrela",8244,-689,-48,45,31,14,67,71,91,70,16.4,2.5],["Sabugal","Centro","Beiras e Serra da Estrela",15396,-362,898,24,20,4,92,102,145,64.1,13.7,2.5],["Seia","Centro","Beiras e Serra da Estrela",17846,-1205,170,135,47,88,225,306,518,78.9,49.5,2.5],["Trancoso","Centro","Beiras e Serra da Estrela",8457,-447,77,51,36,15,84,86,118,71.4,23.1,2.5],["Alcochete","AM Lisboa","Área Metropolitana de Lisboa",9306,1114,1176,124,88,36,254,918,1440,118.9,152.6,2.4],["Almada","AM Lisboa","Área Metropolitana de Lisboa",102836,2319,4907,838,831,7,1343,10145,19198,104.5,2544.1,2.4],["Amadora","AM Lisboa","Área Metropolitana de Lisboa",88635,2187,1476,72,71,1,198,17797,26980,102.3,7310.1,2.4],["Barreiro","AM Lisboa","Área Metropolitana de Lisboa",42285,825,2419,114,83,31,211,3048,6890,96.5,2164.9,2.4],["Cascais","AM Lisboa","Área Metropolitana de Lisboa",110439,2048,3978,443,421,22,1446,25199,36381,121.8,2196.1,2.4],["Lisboa","AM Lisboa","Área Metropolitana de Lisboa",324554,-4019,3224,729,84,645,1512,78614,118104,186.3,5466.5,2.4],["Loures","AM Lisboa","Área Metropolitana de Lisboa",100953,3072,2441,452,441,11,935,16605,23910,102.3,1215.1,2.4],["Mafra","AM Lisboa","Área Metropolitana de Lisboa",44899,6387,6212,943,749,194,1687,3334,6979,102.9,302.7,2.4],["Moita","AM Lisboa","Área Metropolitana de Lisboa",34916,2661,3171,138,138,0,206,2443,5432,82.3,1219.5,2.4],["Montijo","AM Lisboa","Área Metropolitana de Lisboa",28025,4250,4335,231,214,17,350,3084,6663,102.5,164.4,2.4],["Odivelas","AM Lisboa","Área Metropolitana de Lisboa",72578,2505,606,653,647,6,1091,14266,23766,94.7,5642.2,2.4],["Oeiras","AM Lisboa","Área Metropolitana de Lisboa",86847,646,1853,255,210,45,481,9836,15751,165.5,3755.2,2.4],["Palmela","AM Lisboa","Área Metropolitana de Lisboa",34126,5294,6450,367,345,22,549,2209,3789,97.7,152.3,2.4],["Seixal","AM Lisboa","Área Metropolitana de Lisboa",82763,7863,7597,1295,1294,1,1872,7837,15066,96,1770,2.4],["Sesimbra","AM Lisboa","Área Metropolitana de Lisboa",32508,3300,3659,379,379,0,693,1925,3620,94.1,275.1,2.4],["Setúbal","AM Lisboa","Área Metropolitana de Lisboa",64174,312,2389,862,803,59,1278,5807,10975,104.8,533.3,2.4],["Sintra","AM Lisboa","Área Metropolitana de Lisboa",184483,8642,4428,998,916,82,1688,31807,47607,97.9,1215.4,2.4],["Vila Franca de Xira","AM Lisboa","Área Metropolitana de Lisboa",65599,1179,622,135,110,25,456,6089,10065,98.9,433.2,2.4],["Alcácer do Sal","Alentejo","Alentejo Litoral",8947,-591,-17,101,100,1,150,422,489,87.7,7.4,2.4],["Grândola","Alentejo","Alentejo Litoral",12525,-38,566,189,173,16,410,577,935,95.4,16.9,2.4],["Odemira","Alentejo","Alentejo Litoral",21139,4457,5128,79,71,8,163,6124,12286,79.5,18.1,2.4],["Santiago do Cacém","Alentejo","Alentejo Litoral",18740,24,996,123,104,19,205,883,1436,95.8,26.5,2.4],["Sines","Alentejo","Alentejo Litoral",8683,382,600,152,129,23,207,805,1247,120.3,71.4,2.4],["Aljustrel","Alentejo","Baixo Alentejo",5899,-3,394,30,30,0,41,114,217,84.2,19.4,2.4],["Almodôvar","Alentejo","Baixo Alentejo",5547,-191,182,67,53,14,62,160,271,80.4,8.6,2.4],["Alvito","Alentejo","Baixo Alentejo",1740,-40,111,22,9,13,23,80,82,72.4,8.6,2.4],["Barrancos","Alentejo","Baixo Alentejo",1299,-156,-66,10,4,6,20,17,23,67.2,8.8,2.4],["Beja","Alentejo","Baixo Alentejo",20340,-702,407,68,65,3,162,1284,2081,101.7,29.3,2.4],["Castro Verde","Alentejo","Baixo Alentejo",4944,-100,234,62,48,14,92,158,242,103.5,12.2,2.4],["Cuba","Alentejo","Baixo Alentejo",3087,-96,194,53,44,9,70,148,381,73.7,25.7,2.4],["Ferreira do Alentejo","Alentejo","Baixo Alentejo",5236,102,534,54,50,4,55,614,742,74.9,12.1,2.4],["Mértola","Alentejo","Baixo Alentejo",8635,-243,246,64,43,21,68,113,184,68.9,4.8,2.4],["Moura","Alentejo","Baixo Alentejo",10636,-375,68,33,13,20,45,284,220,76,13.9,2.4],["Ourique","Alentejo","Baixo Alentejo",4221,-164,225,33,16,17,36,268,427,75.6,7.3,2.4],["Serpa","Alentejo","Baixo Alentejo",10404,-403,330,75,53,22,119,232,482,74.4,12.4,2.4],["Vidigueira","Alentejo","Baixo Alentejo",3879,-119,134,25,19,6,36,135,175,79.4,16.5,2.4],["Almeirim","Alentejo","Lezíria do Tejo",12409,249,1042,94,92,2,104,559,1094,88.3,101,2.4],["Alpiarça","Alentejo","Lezíria do Tejo",4099,131,490,28,23,5,31,305,344,81.3,74.9,2.4],["Azambuja","Alentejo","Lezíria do Tejo",12123,1024,1506,43,31,12,92,782,1490,111.1,84.2,2.4],["Benavente","Alentejo","Lezíria do Tejo",14866,2555,2785,68,66,2,171,1649,2439,96.7,59.7,2.4],["Cartaxo","Alentejo","Lezíria do Tejo",13636,742,1481,132,109,23,133,627,1163,90.2,150.6,2.4],["Chamusca","Alentejo","Lezíria do Tejo",6257,-340,192,15,8,7,31,75,129,74.5,11.4,2.4],["Coruche","Alentejo","Lezíria do Tejo",12751,-696,432,77,75,2,94,263,377,78,15.6,2.4],["Golegã","Alentejo","Lezíria do Tejo",3163,-137,162,40,34,6,49,63,141,84.1,63.9,2.4],["Rio Maior","Alentejo","Lezíria do Tejo",12736,995,1424,204,148,56,289,834,2026,89.8,79.4,2.4],["Salvaterra de Magos","Alentejo","Lezíria do Tejo",12119,1451,2226,288,277,11,383,383,664,81.2,92.4,2.4],["Santarém","Alentejo","Lezíria do Tejo",35638,1269,3093,226,217,9,288,1883,4000,99.5,108.4,2.4],["Alter do Chão","Alentejo","Alto Alentejo",3058,-64,197,23,7,16,28,105,123,73.6,8.7,2.4],["Arronches","Alentejo","Alto Alentejo",2570,-188,107,11,11,0,16,48,75,75.9,8.8,2.4],["Avis","Alentejo","Alto Alentejo",3683,-170,86,13,6,7,17,50,64,78.6,6.3,2.4],["Campo Maior","Alentejo","Alto Alentejo",4782,-262,7,54,36,18,49,216,245,90.6,32.3,2.4],["Castelo de Vide","Alentejo","Alto Alentejo",2898,-23,232,31,2,29,33,99,145,79.4,12.1,2.4],["Crato","Alentejo","Alto Alentejo",3272,-146,189,35,11,24,29,86,65,73.7,8.2,2.4],["Elvas","Alentejo","Alto Alentejo",13546,-937,7,157,120,37,198,584,676,90,32.5,2.4],["Fronteira","Alentejo","Alto Alentejo",2610,-115,86,6,5,1,12,75,81,76.2,11.9,2.4],["Gavião","Alentejo","Alto Alentejo",3628,-230,173,17,16,1,25,15,22,70.9,11.4,2.4],["Marvão","Alentejo","Alto Alentejo",2988,-139,176,7,3,4,8,117,234,69.3,19.7,2.4],["Monforte","Alentejo","Alto Alentejo",2352,-67,98,13,7,6,16,45,43,71.6,7.1,2.4],["Nisa","Alentejo","Alto Alentejo",7378,-597,26,37,20,17,35,82,105,76.4,10,2.4],["Ponte de Sor","Alentejo","Alto Alentejo",10463,-338,320,102,79,23,122,323,440,83.9,18.1,2.4],["Portalegre","Alentejo","Alto Alentejo",14842,-1046,-192,83,49,34,86,491,746,98.5,49.5,2.4],["Sousel","Alentejo","Alto Alentejo",3775,-137,183,18,9,9,24,78,111,72.9,15.8,2.4],["Alandroal","Alentejo","Alentejo Central",4535,-219,161,16,10,6,42,97,129,69.8,9.2,2.4],["Arraiolos","Alentejo","Alentejo Central",4816,11,350,43,33,10,98,117,155,77.1,9.8,2.4],["Borba","Alentejo","Alentejo Central",4234,-286,42,45,27,18,44,121,120,75.8,44.3,2.4],["Estremoz","Alentejo","Alentejo Central",9514,-447,163,42,23,19,60,296,344,95.7,24.7,2.4],["Évora","Alentejo","Alentejo Central",30023,-865,326,276,218,58,436,2021,2494,112,41.1,2.4],["Montemor-o-Novo","Alentejo","Alentejo Central",10409,-310,618,75,40,35,111,344,537,88.6,12.9,2.4],["Mora","Alentejo","Alentejo Central",3915,-238,185,24,11,13,31,54,55,80.2,9.4,2.4],["Mourão","Alentejo","Alentejo Central",1934,-34,69,17,2,15,24,28,70,71.2,8.6,2.4],["Portel","Alentejo","Alentejo Central",4293,-42,227,37,17,20,53,125,137,68.2,9.6,2.4],["Redondo","Alentejo","Alentejo Central",4652,-224,49,31,24,7,44,195,183,74.1,17,2.4],["Reguengos de Monsaraz","Alentejo","Alentejo Central",6510,-262,131,80,62,18,116,361,333,90.9,21.2,2.4],["Vendas Novas","Alentejo","Alentejo Central",6529,99,545,61,55,6,80,248,577,93.1,51.2,2.4],["Viana do Alentejo","Alentejo","Alentejo Central",3589,48,325,23,5,18,31,85,116,78.8,13.9,2.4],["Vila Viçosa","Alentejo","Alentejo Central",4817,-332,-7,35,33,2,44,96,145,82.8,37.7,2.4],["Albufeira","Algarve","Algarve",43557,2082,1649,228,150,78,291,12350,16779,107,319.5,2.5],["Alcoutim","Algarve","Algarve",3535,-184,173,21,12,9,32,87,243,71,4.3,2.5],["Aljezur","Algarve","Algarve",6014,424,614,73,64,9,143,1335,2264,71.6,19.1,2.5],["Castro Marim","Algarve","Algarve",8519,227,507,87,66,21,134,747,979,81.2,22,2.5],["Faro","Algarve","Algarve",38235,1488,1876,71,42,29,235,6974,10322,116,335.8,2.5],["Lagoa","Algarve","Algarve",20010,1211,1501,319,190,129,490,4160,5574,91.4,273.8,2.5],["Lagos","Algarve","Algarve",28074,1501,2151,321,264,57,442,8154,12165,94.4,157.5,2.5],["Loulé","Algarve","Algarve",66568,1777,2616,170,167,3,356,14945,19364,115.4,94.8,2.5],["Monchique","Algarve","Algarve",4612,-145,215,23,6,17,34,721,934,65.7,13.6,2.5],["Olhão","Algarve","Algarve",26898,428,1057,367,277,90,510,4058,5515,84.5,340.9,2.5],["Portimão","Algarve","Algarve",47912,3096,3316,88,87,1,307,8365,13036,102.1,332.7,2.5],["São Brás de Alportel","Algarve","Algarve",6809,559,778,105,79,26,166,1212,1683,90.2,74.3,2.5],["Silves","Algarve","Algarve",33077,1985,2789,273,140,133,461,5123,7622,83.8,56.5,2.5],["Tavira","Algarve","Algarve",26095,791,1741,343,202,141,454,5180,7406,93.7,45.3,2.5],["Vila do Bispo","Algarve","Algarve",6158,416,532,169,65,104,216,1555,2446,67.2,32.4,2.5],["Vila Real de Santo António","Algarve","Algarve",21070,231,665,182,167,15,202,2444,3304,93.8,309.5,2.5],["Vila do Porto","Açores","Ilha de Santa Maria",3669,67,150,69,34,35,116,122,204,90.4,56.6,3.0],["Lagoa [R.A.A.]","Açores","Ilha de São Miguel",5332,553,471,198,148,50,300,132,196,76.9,319.9,3.0],["Nordeste","Açores","Ilha de São Miguel",2768,-148,19,57,28,29,71,43,70,63.9,43.7,3.0],["Ponta Delgada","Açores","Ilha de São Miguel",29512,542,428,544,424,120,819,988,1553,102.6,292.2,3.0],["Povoação","Açores","Ilha de São Miguel",3685,-23,77,46,44,2,65,63,98,67.1,55.2,3.0],["Ribeira Grande","Açores","Ilha de São Miguel",11778,487,-75,337,220,117,478,180,301,73,177.1,3.0],["Vila Franca do Campo","Açores","Ilha de São Miguel",4292,-173,-94,104,83,21,141,85,101,70.6,133,3.0],["Angra do Heroísmo","Açores","Ilha Terceira",15368,-367,130,102,101,1,192,393,508,94.8,141.8,3.0],["Vila da Praia da Vitória","Açores","Ilha Terceira",9803,-155,88,169,103,66,231,203,256,82.6,121.8,3.0],["Santa Cruz da Graciosa","Açores","Ilha Graciosa",2893,-37,73,39,26,13,50,41,58,78.4,67.8,3.0],["Calheta [R.A.A.]","Açores","Ilha de São Jorge",2411,-6,109,32,9,23,39,21,42,72.3,27.8,3.0],["Velas","Açores","Ilha de São Jorge",3184,-134,20,58,40,18,67,81,119,87.8,42.2,3.0],["Lajes do Pico","Açores","Ilha do Pico",3261,-38,94,37,25,12,60,156,179,70.6,28.3,3.0],["Madalena","Açores","Ilha do Pico",3423,293,405,151,114,37,162,192,238,84.8,43.9,3.0],["São Roque do Pico","Açores","Ilha do Pico",2349,103,165,77,46,31,170,127,154,80.3,23.4,3.0],["Horta","Açores","Ilha do Faial",7198,-10,236,117,80,37,124,565,833,88.7,83.4,3.0],["Lajes das Flores","Açores","Ilha das Flores",1018,-5,61,4,4,0,16,102,126,82.6,20.3,3.0],["Santa Cruz das Flores","Açores","Ilha das Flores",1169,-15,46,7,5,2,16,66,57,84,29.2,3.0],["Corvo","Açores","Ilha do Corvo",195,44,58,8,5,3,8,11,12,75.7,24.7,3.0],["Calheta [R.A.M.]","Madeira","Ilha da Madeira",7548,270,739,181,173,8,239,630,1178,67.1,98.3,2.8],["Câmara de Lobos","Madeira","Ilha da Madeira",13595,32,-58,100,94,6,124,292,529,63.5,620.7,2.8],["Funchal","Madeira","Ilha da Madeira",53199,240,2814,503,288,215,708,4181,6032,109.6,1396.2,2.8],["Machico","Madeira","Ilha da Madeira",9971,-466,30,105,71,34,118,278,433,77,286.6,2.8],["Ponta do Sol","Madeira","Ilha da Madeira",4840,233,509,135,71,64,184,280,553,60.7,183.7,2.8],["Porto Moniz","Madeira","Ilha da Madeira",1965,-8,159,9,8,1,10,58,100,61,30.1,2.8],["Ribeira Brava","Madeira","Ilha da Madeira",6887,292,647,38,38,0,44,305,553,68.2,196.2,2.8],["Santa Cruz","Madeira","Ilha da Madeira",20611,1810,1774,132,100,32,240,1031,1571,76.1,531.2,2.8],["Santana","Madeira","Ilha da Madeira",4899,-305,33,15,14,1,26,84,183,64.6,68,2.8],["São Vicente","Madeira","Ilha da Madeira",4038,-56,216,67,50,17,106,97,208,66.1,61.7,2.8],["Porto Santo","Madeira","Ilha de Porto Santo",4555,140,247,40,32,8,61,299,453,97.5,123.7,2.8]];
+// ===== LOGIC (shared by page and tests) =====
+const IND={
+ short:{pt:'Falta de casas',d:'Novas famílias (crescimento ÷ dimensão do agregado) menos edifícios concluídos, por 1000 casas, 2018–22'},
+ grow:{pt:'Crescimento da população',d:'Saldo total 2018–22 por 1000 casas'},
+ mig:{pt:'Saldo migratório',d:'Entradas − saídas 2018–22 por 1000 casas'},
+ estr:{pt:'Novos residentes estrangeiros',d:'Aumento 2018→2022 por 1000 casas'},
+ ppc:{pt:'Poder de compra',d:'Índice 2021, Portugal = 100'},
+ pipe:{pt:'Obra licenciada (a caminho)',d:'Edifícios licenciados 2018–22 por 1000 casas. Mais obra a caminho = menos falta futura'}
 };
-/* ===== END OF EDIT BLOCK ===== */
-
-const $ = id => document.getElementById(id);
-let weights = {};
-
-function score(opt, w) {
-  const total = CONFIG.factors.reduce((s, f) => s + (w[f.id] || 0), 0) || 1;
-  // low case uses the worst value per factor, high case the best
-  const pick = (f, k) => {
-    const [lo, mid, hi] = opt.values[f.id];
-    const v = k === 1 ? mid : (f.higherIsBetter ? (k === 0 ? lo : hi) : (k === 0 ? hi : lo));
-    return f.higherIsBetter ? v : 10 - v;
-  };
-  return [0, 1, 2].map(k =>
-    CONFIG.factors.reduce((s, f) => s + (w[f.id] || 0) * pick(f, k), 0) / total * 10);
+const SCEN=[
+ {id:'s1',name:'1 · Onde faltam casas agora',q:'Onde é que faltam mais casas para quem já lá vive?',w:{short:1,grow:0,mig:0,estr:0,ppc:0,pipe:0},why:'Só a falta de casas: famílias novas que não encontram edifícios novos acabados.'},
+ {id:'s2',name:'2 · Onde vai chegar mais gente',q:'Onde vai haver mais gente à procura de casa?',w:{short:0,grow:0,mig:.5,estr:.5,ppc:0,pipe:0},why:'Quem está a chegar: saldo migratório e novos residentes estrangeiros, metade cada.'},
+ {id:'s3',name:'3 · Onde o investimento compensa',q:'Onde compensa, para a comunidade e para quem investe?',w:{short:0,grow:.3,mig:0,estr:0,ppc:.4,pipe:-.3},why:'Procura que paga (poder de compra 40%) e cresce (30%), com pouca obra a caminho (−30%).'},
+ {id:'s4',name:'4 · Os meus critérios',q:'Define os teus próprios pesos.',w:{short:.25,grow:.25,mig:0,estr:0,ppc:.25,pipe:-.25},why:'Pesos escolhidos por ti.',custom:true}
+];
+function build(raw,minStock){
+ const rows=raw.map(r=>{const [m,reg,r3,stock,grow,mig,conc,cNew,cReh,lic,e18,e22,ppc,dens,hh]=r;const k=1000/stock;
+  return {m,reg,r3,stock,conc,cNew,cReh,lic,dens,hh,
+   short:(grow/hh-conc)*k, grow:grow*k, mig:mig*k, estr:(e22-e18)*k, ppc, pipe:lic*k,
+   rehShare:conc?cReh/conc:0}});
+ const pool=rows.filter(r=>r.stock>=minStock);
+ const st={};for(const key of Object.keys(IND)){const v=pool.map(r=>r[key]);const mu=v.reduce((a,b)=>a+b,0)/v.length;const sd=Math.sqrt(v.reduce((a,b)=>a+(b-mu)**2,0)/v.length)||1;st[key]={mu,sd}}
+ for(const r of pool){r.z={};for(const key in st)r.z[key]=Math.max(-4,Math.min(4,(r[key]-st[key].mu)/st[key].sd))}
+ return pool;
 }
-
-function rank(w) {
-  return CONFIG.options
-    .map(o => ({ name: o.name, s: score(o, w) }))
-    .sort((a, b) => b.s[1] - a.s[1]);
+function score(pool,w){
+ const tot=Object.values(w).reduce((a,b)=>a+Math.abs(b),0)||1;
+ const s=pool.map(r=>({r,s:Object.keys(w).reduce((a,k)=>a+w[k]*r.z[k],0)/tot})).sort((a,b)=>b.s-a.s);
+ return s;
 }
-
-function renderSliders() {
-  $("sliders").innerHTML = CONFIG.factors.map(f => `
-    <div class="slider">
-      <label for="w-${f.id}">${f.label} <span id="v-${f.id}">${weights[f.id]}</span></label>
-      <small>${f.help}${f.higherIsBetter ? "" : " (less is better)"}</small>
-      <input type="range" id="w-${f.id}" min="0" max="10" step="1" value="${weights[f.id]}">
-    </div>`).join("");
-  CONFIG.factors.forEach(f => {
-    $("w-" + f.id).oninput = e => { weights[f.id] = +e.target.value; $("v-" + f.id).textContent = e.target.value; render(); };
-  });
+function buildOrRehab(r,pool){
+ // Build when the town has a real shortage of new homes (top third on 'short'); otherwise rehab the stock that exists.
+ const v=pool.map(x=>x.short).sort((a,b)=>a-b);const cut=v[Math.floor(v.length*2/3)];
+ return r.short>=cut?'Construir':'Reabilitar';
 }
-
-function render() {
-  const r = rank(weights);
-  const [top, second] = r;
-  const overlap = second && second.s[2] >= top.s[0];
-  $("answer").innerHTML = `Recommendation: <b>${top.name}</b>, score ${top.s[1].toFixed(0)} (range ${top.s[0].toFixed(0)}–${top.s[2].toFixed(0)} out of 100).` +
-    (overlap ? `<br><span class="close">⚠️ Too close to call: ${second.name}'s range overlaps. Treat as a tie.</span>` : "");
-  $("ranking").innerHTML = r.map((o, i) => `
-    <div class="row">
-      <div><b>${i + 1}. ${o.name}</b></div>
-      <div class="track" title="low ${o.s[0].toFixed(0)} · likely ${o.s[1].toFixed(0)} · high ${o.s[2].toFixed(0)}">
-        <div class="band" style="left:${o.s[0]}%;width:${Math.max(o.s[2] - o.s[0], 1)}%"></div>
-        <div class="dot" style="left:${o.s[1]}%"></div>
-      </div>
-      <div class="num">${o.s[0].toFixed(0)} · <b>${o.s[1].toFixed(0)}</b> · ${o.s[2].toFixed(0)}</div>
-    </div>`).join("");
+// ===== PAGE =====
+const fmt=(x,d=1)=>x.toLocaleString('pt-PT',{maximumFractionDigits:d,minimumFractionDigits:d});
+let view='cid',cur=0,sel=null,minStock=5000,pool=build(RAW,minStock);
+const W={...SCEN[3].w};
+const $=id=>document.getElementById(id);
+function weights(){return SCEN[cur].custom?W:SCEN[cur].w}
+function ranked(){return score(pool,weights())}
+function drawTabs(){$('tabs').innerHTML=SCEN.map((s,i)=>`<button class="${i===cur?'on':''}" data-i="${i}">${s.name}</button>`).join('');
+ $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{cur=+b.dataset.i;draw()})}
+function drawSliders(){const w=weights();$('sliders').innerHTML=Object.keys(IND).map(k=>`<div class="slider"><label>${IND[k].pt}<span>${Math.round(w[k]*100)}%</span></label><input type="range" min="-100" max="100" step="5" value="${Math.round(w[k]*100)}" data-k="${k}"><small>${IND[k].d}</small></div>`).join('');
+ $('sliders').querySelectorAll('input').forEach(inp=>inp.oninput=()=>{if(!SCEN[cur].custom){Object.assign(W,SCEN[cur].w);cur=3}W[inp.dataset.k]=inp.value/100;draw(inp.dataset.k)})}
+function bar(x,max){const p=Math.min(1,Math.abs(x)/max)*50;return `<div class="trk"><div class="mid"></div><div class="f" style="${x>=0?`left:50%;width:${p}%;background:var(--good)`:`left:${50-p}%;width:${p}%;background:var(--bad)`}"></div></div>`}
+let MX=2;function line(x){return `<div class="bar" data-m="${x.r.m}"><span class="nm">${x.r.m}</span>${bar(x.s,MX)}<span class="v">${fmt(x.s,2)}</span></div>`}
+function pick(cls,lab,x){const br=buildOrRehab(x.r,pool);return `<div class="pick ${cls}" data-m="${x.r.m}"><div class="lab">${lab}</div><div class="town">${x.r.m}</div><div class="meta">${x.r.reg} · índice ${fmt(x.s,2)}${cls!=='avoid'?` · <span class="tag ${br==='Construir'?'b':'r'}">${br}</span>`:''}</div></div>`}
+function draw(focusK){
+ drawTabs();const s=SCEN[cur],R=ranked();
+ $('scQ').textContent=s.q;$('scWhy').innerHTML='<b>Critério:</b> '+s.why;
+ $('picks').innerHTML=pick('best','Melhor opção',R[0])+pick('alt','Alternativa',R[1])+pick('avoid','A evitar',R.at(-1));
+ if(!focusK)drawSliders();else $('sliders').querySelectorAll('span').forEach((sp,i)=>sp.textContent=Math.round(W[Object.keys(IND)[i]]*100)+'%');
+ $('hiTitle').textContent=view==='cid'?'Mais necessidade (top 10)':'Melhor oportunidade (top 10)';
+ $('loTitle').textContent=view==='cid'?'Menos necessidade (10)':'Pior oportunidade (10)';
+ MX=Math.max(Math.abs(R[0].s),Math.abs(R.at(-1).s));$('hi').innerHTML=R.slice(0,10).map(line).join('');$('lo').innerHTML=R.slice(-10).reverse().map(line).join('');
+ const g={};R.forEach(x=>{(g[x.r.reg]??=[]).push(x.s)});
+ const reg=Object.entries(g).map(([k,v])=>({r:{m:k},s:v.reduce((a,b)=>a+b,0)/v.length,n:v.length})).sort((a,b)=>b.s-a.s);
+ $('regions').innerHTML=reg.map(x=>`<div class="bar" style="cursor:default"><span class="nm">${x.r.m} <span class="muted">(${x.n})</span></span>${bar(x.s,Math.max(...reg.map(y=>Math.abs(y.s))))}<span class="v">${fmt(x.s,2)}</span></div>`).join('');
+ document.querySelectorAll('[data-m]').forEach(el=>{if(pool.find(r=>r.m===el.dataset.m))el.onclick=()=>{sel=el.dataset.m;drawDetail()}});
+ drawDetail();drawAnswer();
 }
-
-function renderScenarios() {
-  $("scenarios").innerHTML = CONFIG.scenarios.map((sc, i) => {
-    const actual = rank(sc.weights)[0].name;
-    const ok = actual === sc.expect;
-    return `<tr><td>${sc.name}</td><td>${sc.expect}</td><td>${actual}</td>
-      <td class="${ok ? "pass" : "fail"}">${ok ? "✅ pass" : "❌ fail"}</td>
-      <td><button data-i="${i}">Try it</button></td></tr>`;
-  }).join("");
-  document.querySelectorAll("#scenarios button").forEach(b => b.onclick = () => {
-    weights = { ...CONFIG.scenarios[b.dataset.i].weights }; renderSliders(); render();
-  });
+function drawDetail(){const r=pool.find(x=>x.m===sel);if(!r){$('detT').textContent='Município';$('detail').innerHTML='<p class="muted">Clica num município.</p>';return}
+ const R=ranked(),pos=R.findIndex(x=>x.r.m===sel)+1;
+ $('detT').textContent=r.m+' · '+r.reg+' · #'+pos+' de '+R.length;
+ const rowsC=[['Falta de casas','short','famílias sem edifício novo / 1000 casas'],['Crescimento','grow','pessoas / 1000 casas'],['Saldo migratório','mig','pessoas / 1000 casas'],['Novos estrangeiros','estr','pessoas / 1000 casas']];
+ const rowsI=[['Poder de compra','ppc','índice, PT = 100'],['Obra licenciada','pipe','edifícios / 1000 casas'],['Crescimento','grow','pessoas / 1000 casas'],['Falta de casas','short','/ 1000 casas']];
+ const rows=view==='cid'?rowsC:rowsI;
+ $('detail').innerHTML=`<table><tr><th>Indicador (2018–22)</th><th class="n">Valor</th><th class="n">Média</th></tr>${rows.map(([l,k,u])=>{const mu=pool.reduce((a,x)=>a+x[k],0)/pool.length;return `<tr><td>${l}<br><small class="muted">${u}</small></td><td class="n"><b>${fmt(r[k])}</b></td><td class="n muted">${fmt(mu)}</td></tr>`}).join('')}
+ <tr><td>Casas existentes (2021)</td><td class="n">${r.stock.toLocaleString('pt-PT')}</td><td></td></tr>
+ <tr><td>Obra concluída que é reabilitação</td><td class="n">${fmt(r.rehShare*100,0)}%</td><td></td></tr></table>
+ <p style="margin:10px 0 0">Resposta: <span class="tag ${buildOrRehab(r,pool)==='Construir'?'b':'r'}">${buildOrRehab(r,pool)}</span> <small class="muted">Construir se a falta de casas está no terço mais alto; senão reabilitar o que existe.</small></p>`}
+function drawAnswer(){
+ const lists=SCEN.slice(0,3).map(s=>score(pool,s.w).map(x=>x.r.m));
+ const both=lists[0].slice(0,10).filter(m=>lists[1].slice(0,10).includes(m)&&lists[2].slice(0,10).includes(m))
+  .sort((a,b)=>lists.reduce((t,l)=>t+l.indexOf(a),0)-lists.reduce((t,l)=>t+l.indexOf(b),0));
+ if(!both.length){$('answer').innerHTML='Nenhum município está no top 10 dos 3 cenários com este filtro. Vê cada cenário.';return}
+ const r=pool.find(x=>x.m===both[0]),pos=lists.map(l=>'#'+(l.indexOf(r.m)+1)).join(', '),others=both.slice(1).join(', ');
+ const ppcMu=pool.reduce((a,x)=>a+x.ppc,0)/pool.length;
+ $('answer').innerHTML=(view==='cid'
+  ?`Recomendação: <b>seguir o cenário 1 (falta de casas agora)</b> e investir primeiro em <b>${r.m}</b>. É o município mais forte nos 3 cenários ao mesmo tempo (${pos})${others?`; seguem-se ${others}`:''}. Resposta: <b>${buildOrRehab(r,pool)}</b>.`
+  :`Para investidores: <b>${r.m}</b> fica no top 10 dos 3 cenários (${pos})${others?`, tal como ${others}`:''}. Poder de compra ${fmt(r.ppc)} (média ${fmt(ppcMu)}), ${fmt(r.pipe)} edifícios licenciados por 1000 casas (média ${fmt(pool.reduce((a,x)=>a+x.pipe,0)/pool.length)}). Resposta: <b>${buildOrRehab(r,pool)}</b>.`);
 }
-
-function reset() {
-  weights = Object.fromEntries(CONFIG.factors.map(f => [f.id, f.weight]));
-  renderSliders(); render();
-}
-
-$("title").textContent = CONFIG.title;
-$("question").textContent = CONFIG.question;
-$("limits").innerHTML = CONFIG.limits.map(l => `<li>${l}</li>`).join("");
-$("reset").onclick = reset;
-reset();
-renderScenarios();
+$('view').querySelectorAll('button').forEach(b=>b.onclick=()=>{view=b.dataset.v;$('view').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));draw()});
+$('minStock').onchange=e=>{minStock=+e.target.value;pool=build(RAW,minStock);draw()};
+draw();
 </script>
 </body>
 </html>
