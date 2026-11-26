@@ -167,11 +167,12 @@ function pick(cls,lab,x){const br=buildOrRehab(x.r,pool);return `<div class="pic
 function draw(focusK){
  drawTabs();const s=SCEN[cur],R=ranked();
  $('scQ').textContent=s.q;$('scWhy').innerHTML='<b>Critério:</b> '+s.why;
- $('picks').innerHTML=pick('best','Melhor opção',R[0])+pick('alt','Alternativa',R[1])+pick('avoid','A evitar',R.at(-1));
+ const empty=!Object.values(weights()).some(v=>v);
+ $('picks').innerHTML=empty?'<p class="muted" style="grid-column:1/-1;margin:0">Todos os pesos estão a 0%. Sobe pelo menos um para ver resultados.</p>':pick('best','Melhor opção',R[0])+pick('alt','Alternativa',R[1])+pick('avoid','A evitar',R.at(-1));
  if(!focusK)drawSliders();else $('sliders').querySelectorAll('span').forEach((sp,i)=>sp.textContent=Math.round(W[Object.keys(IND)[i]]*100)+'%');
  $('hiTitle').textContent=view==='cid'?'Mais necessidade (top 10)':'Melhor oportunidade (top 10)';
  $('loTitle').textContent=view==='cid'?'Menos necessidade (10)':'Pior oportunidade (10)';
- MX=Math.max(Math.abs(R[0].s),Math.abs(R.at(-1).s));$('hi').innerHTML=R.slice(0,10).map(line).join('');$('lo').innerHTML=R.slice(-10).reverse().map(line).join('');
+ MX=Math.max(Math.abs(R[0].s),Math.abs(R.at(-1).s))||1;$('hi').innerHTML=empty?'':R.slice(0,10).map(line).join('');$('lo').innerHTML=empty?'':R.slice(-10).reverse().map(line).join('');
  const g={};R.forEach(x=>{(g[x.r.reg]??=[]).push(x.s)});
  const reg=Object.entries(g).map(([k,v])=>({r:{m:k},s:v.reduce((a,b)=>a+b,0)/v.length,n:v.length})).sort((a,b)=>b.s-a.s);
  $('regions').innerHTML=reg.map(x=>`<div class="bar" style="cursor:default"><span class="nm">${x.r.m} <span class="muted">(${x.n})</span></span>${bar(x.s,Math.max(...reg.map(y=>Math.abs(y.s))))}<span class="v">${fmt(x.s,2)}</span></div>`).join('');
